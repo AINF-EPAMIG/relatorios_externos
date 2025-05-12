@@ -8,18 +8,23 @@ export function DashboardHeader() {
       <div className="flex h-20 items-center px-4 md:px-6 justify-between w-full">
 
         {/* Logo */}
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/epamig.jpg" alt="EPAMIG Logo" width={56} height={56} />
-          </Link>
+  
+        <div className="relative h-20 w-52 md:h-16 md:w-48">
+          <Image
+            src="/epamig_logo.svg"
+            alt="EPAMIG Logo"
+            fill
+            className="object-contain"
+            priority
+          />
         </div>
 
-        {/* Título Central */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 text-center">
-          <h1 className="text-lg font-semibold text-[#3A8144]">
+       {/* Título e descrição centralizada */}
+        <div className="flex flex-col items-center justify-center text-center mt-4 md:mt-0">
+          <h1 className="text-green-700 text-lg md:text-2xl font-semibold leading-tight">
             Empresa de Pesquisa Agropecuária de Minas Gerais
           </h1>
-          <p className="text-sm font-semibold text-black">
+          <p className="text-xs md:text-base text-gray-800 font-bold">
             Secretaria de Estado de Agricultura, Pecuária e Abastecimento de Minas Gerais
           </p>
         </div>
@@ -40,6 +45,10 @@ export function DashboardHeader() {
           </Link>
         </div>
       </div>
+
+
+            <div className="border-t-4 border-green-700"></div> {/* Linha de separação abaixo do header */}
+
     </header>
   )
 }
