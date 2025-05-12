@@ -30,7 +30,7 @@ export default function Header() {
             Empresa de Pesquisa Agropecuária de Minas Gerais1
           </h1>
           <p className="text-xs md:text-base text-gray-800 font-bold">
-            Secretaria de Estado de Agricultura, Pecuária e Abastecimento de Minas Gerais
+            Secretaria de Estado de Agricultura, Pecuária e Abastecimento de Minas Gerais teste 
           </p>
         </div>
 
