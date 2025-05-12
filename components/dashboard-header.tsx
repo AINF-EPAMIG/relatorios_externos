@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Globe, Mail, LayoutDashboard } from "lucide-react"
+import { Globe } from "lucide-react"
 import Image from 'next/image'
 
 export function DashboardHeader() {
