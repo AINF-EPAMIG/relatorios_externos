@@ -2,15 +2,30 @@ import mysql from 'mysql2/promise';
 
 // Configuração do banco de dados
 export const dbConfig = {
-  host: process.env.DATABASE_HOST || 'localhost',
-  port: parseInt(process.env.DATABASE_PORT || '3306'),
-  user: process.env.DATABASE_USER || 'root',
-  password: process.env.DATABASE_PASSWORD || '',
-  database: process.env.DATABASE_NAME || 'atos_gestao',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE ,
+};
+
+
+export const contratos = {
+  host: process.env.DB_CONTRATOS_HOST,
+  user: process.env.DB_CONTRATOS_USER,
+  password: process.env.DB_CONTRATOS_PASSWORD,
+  database: process.env.DB_CONTRATOS_DATABASE ,
+};
+
+const contratosConfig = {
+  host: process.env.DB_CONTRATOS_HOST!,
+  user: process.env.DB_CONTRATOS_USER!,
+  password: process.env.DB_CONTRATOS_PASSWORD!,
+  database: process.env.DB_CONTRATOS_DATABASE!,
 };
 
 // Pool de conexões com o banco de dados
 let connectionPool: mysql.Pool | null = null;
+let contratosPool: mysql.Pool | null = null;
 
 // Função para obter uma conexão do pool
 export async function getConnection() {
@@ -19,6 +34,14 @@ export async function getConnection() {
   }
   return connectionPool;
 }
+
+export async function getContratosConnection() {
+  if (!contratosPool) {
+    contratosPool = mysql.createPool(contratosConfig);
+  }
+  return contratosPool;
+}
+
 
 // Função para executar consultas SQL
 export async function query(sql: string, params: unknown[] = []) {

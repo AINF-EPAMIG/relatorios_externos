@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Base Next.js EPAMIG
 
 Este projeto serve como base para a criação de outros projetos da EPAMIG, já com autenticação Google e login com banco de dados MySQL configurados para demonstração.
@@ -89,3 +90,6 @@ Este projeto base pode ser facilmente adaptado para necessidades específicas de
 ---
 
 Desenvolvido como base de projetos para EPAMIG.
+=======
+# relatorios_externos
+>>>>>>> 1d53e1f84c3c3e9598f8b968f32deccedb67eaf8
