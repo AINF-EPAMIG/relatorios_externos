@@ -5,10 +5,8 @@ import Image from 'next/image'
 export function DashboardHeader() {
   return (
     <header className="border-b bg-white shadow-sm">
-      <div className="flex h-20 items-center px-4 md:px-6 justify-between w-full">
-
+      <div className="container mx-auto px-4 py-3 flex flex-col items-center md:flex-row justify-between">
         {/* Logo */}
-  
         <div className="relative h-20 w-52 md:h-16 md:w-48">
           <Image
             src="/epamig_logo.svg"
@@ -19,7 +17,7 @@ export function DashboardHeader() {
           />
         </div>
 
-       {/* Título e descrição centralizada */}
+        {/* Título e descrição centralizada */}
         <div className="flex flex-col items-center justify-center text-center mt-4 md:mt-0">
           <h1 className="text-green-700 text-lg md:text-2xl font-semibold leading-tight">
             Empresa de Pesquisa Agropecuária de Minas Gerais
@@ -29,19 +27,11 @@ export function DashboardHeader() {
           </p>
         </div>
 
-        {/* Ações */}
-        <div className="ml-auto flex items-center gap-2">
-          <Link href="#" className="flex items-center gap-2 px-3 py-1.5 rounded-md text-white bg-[#3A8144] hover:bg-[#2f6b39] transition text-sm font-medium">
-            <Globe className="h-4 w-4" />
-            <span className="hidden md:inline">Site</span>
-          </Link>
-          <Link href="#" className="flex items-center gap-2 px-3 py-1.5 rounded-md text-white bg-[#3A8144] hover:bg-[#2f6b39] transition text-sm font-medium">
-            <Mail className="h-4 w-4" />
-            <span className="hidden md:inline">E-mail</span>
-          </Link>
-          <Link href="#" className="flex items-center gap-2 px-3 py-1.5 rounded-md text-white bg-[#3A8144] hover:bg-[#2f6b39] transition text-sm font-medium">
-            <LayoutDashboard className="h-4 w-4" />
-            <span className="hidden md:inline">Portal ADM</span>
+        {/* Links do topo direito */}
+        <div className="flex gap-6 mt-3 md:mt-0">
+          <Link href="https://epamig.br" className="flex items-center gap-2 text-sm text-green-700 hover:text-green-900 hover:underline transition-all duration-300" target="_blank" rel="noopener noreferrer">
+            <Globe size={22} />
+            <span className="hidden md:inline-block">Site</span>
           </Link>
         </div>
       </div>
