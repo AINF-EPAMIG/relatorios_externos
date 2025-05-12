@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Contratos } from '@/lib/db'
+import { Contratos } from "@/modules/contratos/db"
 
 export async function GET(req: NextRequest, { params }: { params: { tipo: string } }) {
   try {
