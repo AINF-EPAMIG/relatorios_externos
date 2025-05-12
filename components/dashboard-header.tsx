@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Globe } from "lucide-react"
+import { Globe, Mail, LayoutDashboard} from "lucide-react"
 import Image from 'next/image'
 
 export function DashboardHeader() {
@@ -28,10 +28,29 @@ export function DashboardHeader() {
         </div>
 
         {/* Links do topo direito */}
-        <div className="flex gap-6 mt-3 md:mt-0">
-          <Link href="https://epamig.br" className="flex items-center gap-2 text-sm text-green-700 hover:text-green-900 hover:underline transition-all duration-300" target="_blank" rel="noopener noreferrer">
-            <Globe size={22} />
-            <span className="hidden md:inline-block">Site</span>
+      <div className="flex gap-3 mt-3 md:mt-0">
+          <Link
+            href="https://epamig.br"
+            className="flex items-center gap-2 text-sm text-white bg-green-700 hover:bg-green-800 px-4 py-2 rounded-md transition-all duration-300"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Globe size={18} />
+            <span>Site</span>
+          </Link>
+          <Link
+            href="mailto:contato@epamig.br"
+            className="flex items-center gap-2 text-sm text-white bg-green-700 hover:bg-green-800 px-4 py-2 rounded-md transition-all duration-300"
+          >
+            <Mail size={18} />
+            <span>E-mail</span>
+          </Link>
+          <Link
+            href="#"
+            className="flex items-center gap-2 text-sm text-white bg-green-700 hover:bg-green-800 px-4 py-2 rounded-md transition-all duration-300"
+          >
+            <LayoutDashboard size={18} />
+            <span>Portal ADM</span>
           </Link>
         </div>
       </div>
