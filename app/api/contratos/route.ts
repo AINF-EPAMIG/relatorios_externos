@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Contratos } from '@/modules/contratos/db';
+import { Contratos } from '@/lib/db';
 
 export async function GET() {
   try {

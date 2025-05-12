@@ -8,6 +8,12 @@ export const dbConfig = {
   database: process.env.DB_DATABASE ,
 };
 
+export const Contratos = mysql.createPool({
+  host: process.env.DB_CONTRATOS_HOST,
+  user: process.env.DB_CONTRATOS_USER,
+  password: process.env.DB_CONTRATOS_PASSWORD,
+  database: process.env.DB_CONTRATOS_DATABASE,
+});
 
 export const contratos = {
   host: process.env.DB_CONTRATOS_HOST,
