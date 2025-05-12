@@ -27,7 +27,7 @@ export default function Header() {
         {/* Título e descrição centralizada */}
         <div className="flex flex-col items-center justify-center text-center mt-4 md:mt-0">
           <h1 className="text-green-700 text-lg md:text-2xl font-semibold leading-tight">
-            Empresa de Pesquisa Agropecuária de Minas Gerais
+            Empresa de Pesquisa Agropecuária de Minas Gerais1
           </h1>
           <p className="text-xs md:text-base text-gray-800 font-bold">
             Secretaria de Estado de Agricultura, Pecuária e Abastecimento de Minas Gerais
