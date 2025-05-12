@@ -15,7 +15,7 @@ export default function Header() {
         {/* Logo */}
         <div>
           <Image
-            src="/epamig_logo.svg"
+            src="/epamig.jpg"
             alt="EPAMIG Logo"
             width={180}
             height={60}
