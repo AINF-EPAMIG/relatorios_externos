@@ -6,7 +6,7 @@ export const dbConfig = {
   port: parseInt(process.env.DATABASE_PORT || '3306'),
   user: process.env.DATABASE_USER || 'root',
   password: process.env.DATABASE_PASSWORD || '',
-  database: process.env.DATABASE_NAME || 'exemplo',
+  database: process.env.DATABASE_NAME || 'atos_gestao',
 };
 
 // Pool de conexões com o banco de dados

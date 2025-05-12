@@ -1,24 +1,23 @@
-import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
-import './globals.css'
-import { AuthProvider } from '@/components/AuthProvider'
+import type React from "react"
+import "@/app/globals.css"
+import { Inter } from "next/font/google"
+import { ThemeProvider } from "@/components/theme-provider"
 
-export const metadata: Metadata = {
-  title: 'Projeto EPAMIG',
-  description: 'Projeto base EPAMIG',
-}
+const inter = Inter({ subsets: ["latin"] })
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
-    <html lang="pt-BR">
-      <body className={GeistSans.className}>
-        <AuthProvider>{children}</AuthProvider>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <head />
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
 }
-
