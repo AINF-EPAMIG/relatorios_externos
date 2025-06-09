@@ -160,8 +160,13 @@ export function ManagementActsTable() {
                 {`${tipoMap[item.tipo_id] || item.nome_tipo} - Número: ${item.numero}`}
               </h3>
               <span className="text-sm font-bold" style={{ color: "#3A8144" }}>
-                Data do documento: {item.data_ato ? new Date(item.data_ato + "T12:00:00").toLocaleDateString("pt-BR"): "—"}
-              </span>
+  {(() => {
+    if (!item.data_ato) return "Data do documento: —"
+    const [ano, mes, dia] = item.data_ato.split("-")
+    return `Data do documento: ${dia}/${mes}/${ano}`
+  })()}
+</span>
+
             </div>
             <p className="text-sm text-gray-800 whitespace-pre-line leading-relaxed mb-2">
               {item.descricao}
