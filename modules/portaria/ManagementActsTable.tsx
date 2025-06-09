@@ -161,80 +161,56 @@ export function ManagementActsTable() {
                 {`${tipoMap[item.tipo_id] || item.nome_tipo} - Número: ${item.numero}`}
               </h3>
               <span className="text-sm font-bold" style={{ color: "#3A8144" }}>
-                Data do documento: {new Date(item.data_ato).toLocaleDateString()}
+                Data do documento: {item.data_ato ? new Date(item.data_ato.replace(/-/g, '/')).toLocaleDateString('pt-BR') : "—"}
               </span>
             </div>
             <p className="text-sm text-gray-800 whitespace-pre-line leading-relaxed mb-2">
               {item.descricao}
             </p>
 
-           <div className="flex flex-row gap-6 items-center justify-center">
-  {/* Arquivo Original */}
-  {(() => {
-    const arquivosValidos = item.arquivos
-      .filter((arq: Arquivo) =>
-        arq.path_servidor &&
-        arq.path_servidor.trim() !== "" &&
-        arq.path_servidor !== "null"
-      );
-    const original = arquivosValidos.find((arq: Arquivo) => arq.tipo_arquivo === "Arquivo");
-    const atualizado = arquivosValidos.find((arq: Arquivo) => arq.tipo_arquivo === "Atualizado");
-
-    return (
-      <>
-        {original && (
-          <div
-            className="flex flex-col items-center cursor-pointer group"
-            title="Visualizar o PDF Original"
-            onClick={() => {
-              const url = `https://epamigsistema.com/atos_gestao/web/${original.path_servidor.replace(/\\/g, '/')}`;
-              setArquivoAtual(url);
-              setModalAberto(true);
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-10 h-10 mb-1 group-hover:scale-105 transition"
-              fill="#B91C1C"
-              viewBox="0 0 24 24"
-            >
-              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z"/>
-            </svg>
-            <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
-              Arquivo Original
-            </span>
-          </div>
-        )}
-        {atualizado && (
-          <div
-            className="flex flex-col items-center cursor-pointer group"
-            title="Visualizar PDF Atualizado"
-            onClick={() => {
-              const url = `https://epamigsistema.com/atos_gestao/web/${atualizado.path_servidor.replace(/\\/g, '/')}`;
-              setArquivoAtual(url);
-              setModalAberto(true);
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-10 h-10 mb-1 group-hover:scale-105 transition"
-              fill="#3A8144"
-              viewBox="0 0 24 24"
-            >
-              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z"/>
-            </svg>
-            <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
-              Versão Atualizada
-            </span>
-          </div>
-        )}
-        {!original && !atualizado && (
-          <span className="text-gray-400 text-xs">Sem anexo</span>
-        )}
-      </>
-    );
-  })()}
-</div>
+            {/* Ícones dos arquivos no canto inferior direito */}
+            <div className="flex w-full justify-end items-end mt-4">
+              <div className="flex flex-row gap-6 items-center">
+                {(() => {
+                  const arquivosValidos = item.arquivos
+                    .filter((arq: Arquivo) =>
+                      arq.path_servidor &&
+                      arq.path_servidor.trim() !== "" &&
+                      arq.path_servidor !== "null"
+                    );
+                  const arquivosParaMostrar = arquivosValidos.filter(
+                    (arq: Arquivo) => arq.tipo_arquivo === "Arquivo" || arq.tipo_arquivo === "Atualizado"
+                  );
+                  return arquivosParaMostrar.length > 0 ? arquivosParaMostrar.map((arq: Arquivo, index: number) => {
+                    const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`;
+                    const isAtualizado = arq.tipo_arquivo === "Atualizado";
+                    return (
+                      <div
+                        key={index}
+                        className="flex flex-col items-center cursor-pointer group"
+                        title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
+                        onClick={() => {
+                          setArquivoAtual(url);
+                          setModalAberto(true);
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-10 h-10 mb-1 group-hover:scale-105 transition"
+                          fill={isAtualizado ? "#3A8144" : "#B91C1C"}
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z"/>
+                        </svg>
+                        <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
+                          {isAtualizado ? "Versão Atualizada" : "Arquivo Original"}
+                        </span>
+                      </div>
+                    );
+                  }) : <span className="text-gray-400 text-xs">Sem anexo</span>;
+                })()}
+              </div>
+            </div>
 
           </div>
         ))}
