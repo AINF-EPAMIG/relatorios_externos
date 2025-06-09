@@ -163,7 +163,11 @@ export function ManagementActsTable() {
               <span className="text-sm font-bold" style={{ color: "#3A8144" }}>
                 {(() => {
          const dataAto = item.data_ato ? item.data_ato.split(' ')[0] : null;
-         return `Data do documento: ${item.data_ato ? new Date(item.data_ato).toLocaleDateString('pt-BR') : "—"}`
+         return `Data do documento: ${
+          item.data_ato
+            ? new Date(item.data_ato + "T03:00:00").toLocaleDateString("pt-BR")
+            : "—"
+        }`
 
          
                 })()}

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { dbPortaria } from "@/modules/portaria/db"
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
