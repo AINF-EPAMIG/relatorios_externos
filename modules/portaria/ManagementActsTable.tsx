@@ -188,7 +188,7 @@ export function ManagementActsTable() {
 
   const arquivosParaMostrar = arquivosValidos.filter(
     (arq: Arquivo) =>
-      arq.tipo_arquivo === "Arquivo" || arq.tipo_arquivo === "Atualizado"
+      arq.tipo_arquivo == "Arquivo" || arq.tipo_arquivo == "Atualizado"
   )
 
   // Debug opcional
