@@ -177,7 +177,7 @@ export function ManagementActsTable() {
   <div className="flex gap-6 items-center">
     {item.arquivos.map((arq: Arquivo, index: number) => {
       const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
-      const isAtualizado = arq.tipo_arquivo === "Atualizado"
+      const isAtualizado = arq.tipo_arquivo == "Atualizado"
 
       return (
         <div
