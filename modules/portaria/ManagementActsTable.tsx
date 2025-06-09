@@ -162,7 +162,9 @@ export function ManagementActsTable() {
               <span className="text-sm font-bold" style={{ color: "#3A8144" }}>
   {(() => {
     if (!item.data_ato) return "Data do documento: —"
-    const [ano, mes, dia] = item.data_ato.split("-")
+    
+    // Corta só a parte da data (primeiros 10 caracteres: YYYY-MM-DD)
+    const [ano, mes, dia] = item.data_ato.substring(0, 10).split("-")
     return `Data do documento: ${dia}/${mes}/${ano}`
   })()}
 </span>
