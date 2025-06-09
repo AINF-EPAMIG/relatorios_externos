@@ -49,10 +49,9 @@ export function ManagementActsTable() {
               arquivos: [],
             }
           }
-
           if (item.path_servidor) {
             acc[id].arquivos.push({
-              tipo: item.tipo, // ← ajuste correto para nome do campo
+              tipo_arquivo: item.tipo_arquivo, // <- isso precisa estar igual ao que você renomeou no SQL
               path_servidor: item.path_servidor,
             })
           }
