@@ -51,7 +51,7 @@ export function ManagementActsTable() {
           }
           if (item.path_servidor && item.path_servidor.trim() !== "" && item.path_servidor !== "null") {
             acc[id].arquivos.push({
-              tipo_arquivo: item.tipo_arquivo,
+              tipo_arquivo: item.tipo_arquivo, // <- aqui precisa bater com o SELECT
               path_servidor: item.path_servidor,
             })
           }
@@ -162,8 +162,10 @@ export function ManagementActsTable() {
               </h3>
               <span className="text-sm font-bold" style={{ color: "#3A8144" }}>
                 {(() => {
-                  const dataAto = item.data_ato ? item.data_ato.split(' ')[0] : null;
-                  return `Data do documento: ${dataAto ? new Date(dataAto).toLocaleDateString('pt-BR') : "—"}`;
+         const dataAto = item.data_ato ? item.data_ato.split(' ')[0] : null;
+         return `Data do documento: ${item.data_ato ? new Date(item.data_ato).toLocaleDateString('pt-BR') : "—"}`
+
+         
                 })()}
               </span>
             </div>
@@ -177,44 +179,55 @@ export function ManagementActsTable() {
                 {item.status}
               </span>
               <div className="flex flex-row gap-6 items-center">
-                {(() => {
-                  const arquivosValidos = item.arquivos
-                    .filter((arq: Arquivo) =>
-                      arq.path_servidor &&
-                      arq.path_servidor.trim() !== "" &&
-                      arq.path_servidor !== "null"
-                    );
-                  const arquivosParaMostrar = arquivosValidos.filter(
-                    (arq: Arquivo) => arq.tipo_arquivo === "Arquivo" || arq.tipo_arquivo === "Atualizado"
-                  );
-                  return arquivosParaMostrar.length > 0 ? arquivosParaMostrar.map((arq: Arquivo, index: number) => {
-                    const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`;
-                    const isAtualizado = arq.tipo_arquivo == "Atualizado";
-                    return (
-                      <div
-                        key={index}
-                        className="flex flex-col items-center cursor-pointer group"
-                        title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
-                        onClick={() => {
-                          setArquivoAtual(url);
-                          setModalAberto(true);
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-10 h-10 mb-1 group-hover:scale-105 transition"
-                          fill={isAtualizado ? "#3A8144" : "#B91C1C"}
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z"/>
-                        </svg>
-                        <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
-                          {isAtualizado ? "Versão Atualizada" : "Arquivo Original"}
-                        </span>
-                      </div>
-                    );
-                  }) : <span className="text-gray-400 text-xs">Sem anexo</span>;
-                })()}
+              {(() => {
+  const arquivosValidos = (item.arquivos || []).filter((arq: Arquivo) =>
+    arq.path_servidor &&
+    arq.path_servidor.trim() !== "" &&
+    arq.path_servidor !== "null"
+  )
+
+  const arquivosParaMostrar = arquivosValidos.filter(
+    (arq: Arquivo) =>
+      arq.tipo_arquivo === "Arquivo" || arq.tipo_arquivo === "Atualizado"
+  )
+
+  // Debug opcional
+  // console.log("📎 Arquivos:", item.numero, arquivosParaMostrar)
+
+  return arquivosParaMostrar.length > 0 ? (
+    arquivosParaMostrar.map((arq: Arquivo, index: number) => {
+      const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
+      const isAtualizado = arq.tipo_arquivo === "Atualizado"
+
+      return (
+        <div
+          key={index}
+          className="flex flex-col items-center cursor-pointer group"
+          title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
+          onClick={() => {
+            setArquivoAtual(url)
+            setModalAberto(true)
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-10 h-10 mb-1 group-hover:scale-105 transition"
+            fill={isAtualizado ? "#3A8144" : "#B91C1C"}
+            viewBox="0 0 24 24"
+          >
+            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z" />
+          </svg>
+          <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
+            {isAtualizado ? "Versão Atualizada" : "Arquivo Original"}
+          </span>
+        </div>
+      )
+    })
+  ) : (
+    <span className="text-gray-400 text-xs">Sem anexo</span>
+  )
+})()}
+
               </div>
             </div>
 
