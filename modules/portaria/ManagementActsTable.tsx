@@ -52,7 +52,7 @@ export function ManagementActsTable() {
 
           if (item.path_servidor) {
             acc[id].arquivos.push({
-              tipo_arquivo: item.tipo, // ← ajuste correto para nome do campo
+              tipo: item.tipo, // ← ajuste correto para nome do campo
               path_servidor: item.path_servidor,
             })
           }
