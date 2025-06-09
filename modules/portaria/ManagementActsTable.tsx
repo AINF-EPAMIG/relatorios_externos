@@ -167,6 +167,7 @@ export function ManagementActsTable() {
   })()}
 </span>
 
+
             </div>
             <p className="text-sm text-gray-800 whitespace-pre-line leading-relaxed mb-2">
               {item.descricao}
