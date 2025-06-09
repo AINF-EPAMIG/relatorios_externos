@@ -175,7 +175,9 @@ export function ManagementActsTable() {
 
   {Array.isArray(item.arquivos) && item.arquivos.length > 0 ? (
   <div className="flex gap-6 items-center">
-    {item.arquivos.map((arq: Arquivo, index: number) => {
+    {item.arquivos
+   .filter((arq: Arquivo) => arq.path_servidor && arq.path_servidor.trim() !== "" && arq.path_servidor !== "null")
+   .map((arq: Arquivo, index: number) => {
       const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
       const isAtualizado = arq.tipo_arquivo == "Atualizado"
 
