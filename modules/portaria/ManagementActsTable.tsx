@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 
+export const dynamic = "force-dynamic"
+
 interface Arquivo {
   tipo_arquivo: string
   path_servidor: string
@@ -23,9 +25,8 @@ export function ManagementActsTable() {
     "3": "BIA"
   }
 
-  // ✅ CORRETO: agora dentro do useEffect
   useEffect(() => {
-    fetch("/api/portaria")
+    fetch("/api/portaria", { cache: "no-store" })
       .then(res => res.json())
       .then(response => {
         const data = Array.isArray(response) ? response : response.data
@@ -49,13 +50,13 @@ export function ManagementActsTable() {
               arquivos: [],
             }
           }
+
           if (item.path_servidor && item.path_servidor.trim() !== "" && item.path_servidor !== "null") {
             acc[id].arquivos.push({
-              tipo_arquivo: item.tipo_arquivo, // <- aqui precisa bater com o SELECT
+              tipo_arquivo: item.tipo_arquivo,
               path_servidor: item.path_servidor,
             })
           }
-          
 
           return acc
         }, {})
@@ -70,27 +71,26 @@ export function ManagementActsTable() {
 
   useEffect(() => {
     let filtrado = dadosOriginais
-  
+
     if (filtros.tipo_id) {
       filtrado = filtrado.filter((item) => item.tipo_id?.toString() === filtros.tipo_id)
     }
-  
+
     if (filtros.numero) {
       filtrado = filtrado.filter((item) =>
         item.numero?.toString().toLowerCase().includes(filtros.numero.toLowerCase())
       )
     }
-  
+
     if (filtros.descricao) {
       filtrado = filtrado.filter((item) =>
         item.descricao?.toLowerCase().includes(filtros.descricao.toLowerCase())
       )
     }
-  
+
     setPaginaAtual(1)
     setDados(filtrado)
   }, [filtros, dadosOriginais])
-  
 
   const indiceInicial = (paginaAtual - 1) * itensPorPagina
   const dadosPaginados = dados.slice(indiceInicial, indiceInicial + itensPorPagina)
@@ -119,14 +119,13 @@ export function ManagementActsTable() {
           className="border p-2 rounded text-sm w-40"
         />
 
-<input
-  type="text"
-  placeholder="Descrição"
-  value={filtros.descricao}
-  onChange={(e) => setFiltros({ ...filtros, descricao: e.target.value })}
-  className="border p-2 rounded text-sm w-60"
-/>
-
+        <input
+          type="text"
+          placeholder="Descrição"
+          value={filtros.descricao}
+          onChange={(e) => setFiltros({ ...filtros, descricao: e.target.value })}
+          className="border p-2 rounded text-sm w-60"
+        />
 
         <select
           value={filtros.tipo_id}
@@ -149,98 +148,81 @@ export function ManagementActsTable() {
         </button>
       </div>
 
-      {/* Lista de Cards */}
+      {/* Lista */}
       <div className="space-y-4">
         {dadosPaginados.map((item, idx) => (
           <div
             key={idx}
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200 hover:shadow-lg transition"
           >
-            <div className="flex justify-between items-center mb-2 rounded">
+            <div className="flex justify-between items-center mb-2">
               <h3 className="font-semibold" style={{ color: "#3A8144" }}>
                 {`${tipoMap[item.tipo_id] || item.nome_tipo} - Número: ${item.numero}`}
               </h3>
               <span className="text-sm font-bold" style={{ color: "#3A8144" }}>
-                {(() => {
-         const dataAto = item.data_ato ? item.data_ato.split(' ')[0] : null;
-         return `Data do documento: ${
-          item.data_ato
-            ? new Date(item.data_ato + "T03:00:00").toLocaleDateString("pt-BR")
-            : "—"
-        }`
-
-         
-                })()}
+                Data do documento: {item.data_ato ? new Date(item.data_ato).toLocaleDateString("pt-BR") : "—"}
               </span>
             </div>
             <p className="text-sm text-gray-800 whitespace-pre-line leading-relaxed mb-2">
               {item.descricao}
             </p>
 
-            {/* Linha inferior: status à esquerda, arquivos à direita */}
-            <div className="flex flex-row items-end justify-between w-full mt-4">
+            <div className="flex justify-between items-end mt-4">
               <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
                 {item.status}
               </span>
-              <div className="flex flex-row gap-6 items-center">
-              {(() => {
-  const arquivosValidos = (item.arquivos || []).filter((arq: Arquivo) =>
-    arq.path_servidor &&
-    arq.path_servidor.trim() !== "" &&
-    arq.path_servidor !== "null"
-  )
+              <div className="flex gap-6 items-center">
+                {(() => {
+                  const arquivosValidos = (item.arquivos || []).filter((arq: Arquivo) =>
+                    arq.path_servidor &&
+                    arq.path_servidor.trim() !== "" &&
+                    arq.path_servidor !== "null"
+                  )
 
-  const arquivosParaMostrar = arquivosValidos.filter(
-    (arq: Arquivo) =>
-      arq.tipo_arquivo == "Arquivo" || arq.tipo_arquivo == "Atualizado"
-  )
+                  const arquivosParaMostrar = arquivosValidos.filter(
+                    (arq: Arquivo) =>
+                      arq.tipo_arquivo === "Arquivo" || arq.tipo_arquivo === "Atualizado"
+                  )
 
-  // Debug opcional
-  // console.log("📎 Arquivos:", item.numero, arquivosParaMostrar)
+                  return arquivosParaMostrar.length > 0 ? (
+                    arquivosParaMostrar.map((arq: Arquivo, index: number) => {
+                      const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
+                      const isAtualizado = arq.tipo_arquivo === "Atualizado"
 
-  return arquivosParaMostrar.length > 0 ? (
-    arquivosParaMostrar.map((arq: Arquivo, index: number) => {
-      const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
-      const isAtualizado = arq.tipo_arquivo === "Atualizado"
-
-      return (
-        <div
-          key={index}
-          className="flex flex-col items-center cursor-pointer group"
-          title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
-          onClick={() => {
-            setArquivoAtual(url)
-            setModalAberto(true)
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-10 h-10 mb-1 group-hover:scale-105 transition"
-            fill={isAtualizado ? "#3A8144" : "#B91C1C"}
-            viewBox="0 0 24 24"
-          >
-            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z" />
-          </svg>
-          <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
-            {isAtualizado ? "Versão Atualizada" : "Arquivo Original"}
-          </span>
-        </div>
-      )
-    })
-  ) : (
-    <span className="text-gray-400 text-xs">Sem anexo</span>
-  )
-})()}
-
+                      return (
+                        <div
+                          key={index}
+                          className="flex flex-col items-center cursor-pointer group"
+                          title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
+                          onClick={() => {
+                            setArquivoAtual(url)
+                            setModalAberto(true)
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-10 h-10 mb-1 group-hover:scale-105 transition"
+                            fill={isAtualizado ? "#3A8144" : "#B91C1C"}
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z" />
+                          </svg>
+                          <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
+                            {isAtualizado ? "Versão Atualizada" : "Arquivo Original"}
+                          </span>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <span className="text-gray-400 text-xs">Sem anexo</span>
+                  )
+                })()}
               </div>
             </div>
-
           </div>
         ))}
         {dadosPaginados.length === 0 && (
-          <div className="text-center text-gray-500 py-4">
-            Nenhum resultado encontrado.
-          </div>
+          <div className="text-center text-gray-500 py-4">Nenhum resultado encontrado.</div>
         )}
       </div>
 
@@ -264,61 +246,41 @@ export function ManagementActsTable() {
       )}
 
       {/* Modal */}
-{modalAberto && arquivoAtual && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-    <div className="bg-white w-full max-w-6xl h-[95vh] mx-4 rounded-lg shadow-xl flex flex-col relative overflow-hidden">
-
-      {/* Cabeçalho branco fixo com botão de fechar */}
-      <div className="w-full flex justify-between items-center px-6 py-3 border-b bg-white shadow-sm z-50">
-        <h2 className="text-lg font-bold text-[#3A8144]"></h2>
-        <button
-          onClick={() => setModalAberto(false)}
-          className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 hover:bg-[#2f6b39] transition"
-        >
-          Fechar
-        </button>
-      </div>
-
-      {/* Corpo com PDF e lateral de ações */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Lateral esquerda */}
-        <div className="w-56 bg-[#f4f4f4] border-r px-4 py-6 flex flex-col justify-start gap-4">
-          <h2 className="text-lg font-bold text-[#3A8144]">Ações</h2>
-          <a
-            href={arquivoAtual}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 text-center hover:bg-[#2f6b39] transition"
-          >
-            Abrir em nova aba
-          </a>
+      {modalAberto && arquivoAtual && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white w-full max-w-6xl h-[95vh] mx-4 rounded-lg shadow-xl flex flex-col relative overflow-hidden">
+            <div className="w-full flex justify-between items-center px-6 py-3 border-b bg-white shadow-sm z-50">
+              <h2 className="text-lg font-bold text-[#3A8144]">Visualização do Arquivo</h2>
+              <button
+                onClick={() => setModalAberto(false)}
+                className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 hover:bg-[#2f6b39] transition"
+              >
+                Fechar
+              </button>
+            </div>
+            <div className="flex flex-1 overflow-hidden">
+              <div className="w-56 bg-[#f4f4f4] border-r px-4 py-6 flex flex-col gap-4">
+                <h2 className="text-lg font-bold text-[#3A8144]">Ações</h2>
+                <a
+                  href={arquivoAtual}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 text-center hover:bg-[#2f6b39] transition"
+                >
+                  Abrir em nova aba
+                </a>
+              </div>
+              <div className="flex-1 overflow-auto bg-gray-100 p-4 flex justify-center items-start">
+                <iframe
+                  src={arquivoAtual}
+                  className="w-full max-w-[900px] aspect-[794/1123] bg-white border shadow-lg rounded"
+                  style={{ minHeight: '90vh' }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* Área PDF */}
-        <div className="flex-1 overflow-auto bg-gray-100 p-4 flex justify-center items-start">
-          <iframe
-            src={arquivoAtual}
-            className="w-full max-w-[900px] aspect-[794/1123] bg-white border shadow-lg rounded"
-            style={{ minHeight: '90vh' }}
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
+      )}
     </div>
   )
 }
