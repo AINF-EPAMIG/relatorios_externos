@@ -161,15 +161,21 @@ export function ManagementActsTable() {
                 {`${tipoMap[item.tipo_id] || item.nome_tipo} - Número: ${item.numero}`}
               </h3>
               <span className="text-sm font-bold" style={{ color: "#3A8144" }}>
-                Data do documento: {item.data_ato ? new Date(item.data_ato.replace(/-/g, '/')).toLocaleDateString('pt-BR') : "—"}
+                {(() => {
+                  const dataAto = item.data_ato ? item.data_ato.split(' ')[0] : null;
+                  return `Data do documento: ${dataAto ? new Date(dataAto).toLocaleDateString('pt-BR') : "—"}`;
+                })()}
               </span>
             </div>
             <p className="text-sm text-gray-800 whitespace-pre-line leading-relaxed mb-2">
               {item.descricao}
             </p>
 
-            {/* Ícones dos arquivos no canto inferior direito */}
-            <div className="flex w-full justify-end items-end mt-4">
+            {/* Linha inferior: status à esquerda, arquivos à direita */}
+            <div className="flex flex-row items-end justify-between w-full mt-4">
+              <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                {item.status}
+              </span>
               <div className="flex flex-row gap-6 items-center">
                 {(() => {
                   const arquivosValidos = item.arquivos
