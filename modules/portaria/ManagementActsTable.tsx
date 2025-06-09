@@ -173,22 +173,26 @@ export function ManagementActsTable() {
     {item.status}
   </span>
 
-  {Array.isArray(item.arquivos) && item.arquivos.length > 0 ? (
-  <div className="flex gap-6 items-center">
-    {item.arquivos
-   .filter((arq: Arquivo) => arq.path_servidor && arq.path_servidor.trim() !== "" && arq.path_servidor !== "null")
-   .map((arq: Arquivo, index: number) => {
-      const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
-      const isAtualizado = arq.tipo_arquivo == "Atualizado"
-
+  {(() => {
+    const arquivosValidos = item.arquivos
+      .filter((arq: Arquivo) =>
+        arq.path_servidor &&
+        arq.path_servidor.trim() !== "" &&
+        arq.path_servidor !== "null"
+      );
+    const original = arquivosValidos.find((arq: Arquivo) => arq.tipo_arquivo === "Arquivo");
+    const atualizado = arquivosValidos.find((arq: Arquivo) => arq.tipo_arquivo === "Atualizado");
+    return [original, atualizado].filter(Boolean).map((arq: Arquivo, index: number) => {
+      const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`;
+      const isAtualizado = arq.tipo_arquivo === "Atualizado";
       return (
         <div
           key={index}
           className="flex flex-col items-center cursor-pointer group"
           title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
           onClick={() => {
-            setArquivoAtual(url)
-            setModalAberto(true)
+            setArquivoAtual(url);
+            setModalAberto(true);
           }}
         >
           <svg
@@ -203,12 +207,9 @@ export function ManagementActsTable() {
             {isAtualizado ? "Versão Atualizada" : "Arquivo Original"}
           </span>
         </div>
-      )
-    })}
-  </div>
-) : (
-  <span className="text-gray-400 text-xs">Sem anexo</span>
-)}
+      );
+    });
+  })()}
 </div>
 
           </div>
