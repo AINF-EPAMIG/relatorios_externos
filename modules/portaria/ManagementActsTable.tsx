@@ -49,12 +49,13 @@ export function ManagementActsTable() {
               arquivos: [],
             }
           }
-          if (item.path_servidor) {
+          if (item.path_servidor && item.path_servidor.trim() !== "" && item.path_servidor !== "null") {
             acc[id].arquivos.push({
-              tipo_arquivo: item.tipo_arquivo, // <- isso precisa estar igual ao que você renomeou no SQL
+              tipo_arquivo: item.tipo_arquivo,
               path_servidor: item.path_servidor,
             })
           }
+          
 
           return acc
         }, {})
