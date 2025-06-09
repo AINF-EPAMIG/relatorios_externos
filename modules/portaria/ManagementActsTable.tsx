@@ -1,12 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Filter, Hash, RefreshCw, FileDown, X } from "lucide-react"
+
+interface Arquivo {
+  tipo_arquivo: string
+  path_servidor: string
+}
 
 export function ManagementActsTable() {
   const [dadosOriginais, setDadosOriginais] = useState<any[]>([])
   const [dados, setDados] = useState<any[]>([])
-  const [filtros, setFiltros] = useState({ numero: "", tipo_id: "1" })
+  const [filtros, setFiltros] = useState({ numero: "", descricao: "", tipo_id: "1" })
   const [paginaAtual, setPaginaAtual] = useState(1)
   const [itensPorPagina, setItensPorPagina] = useState(10)
   const [modalAberto, setModalAberto] = useState(false)
@@ -19,29 +23,74 @@ export function ManagementActsTable() {
     "3": "BIA"
   }
 
+  // ✅ CORRETO: agora dentro do useEffect
   useEffect(() => {
     fetch("/api/portaria")
       .then(res => res.json())
-      .then(data => {
-        console.log("✅ Dados recebidos da API:", data)
-        setDadosOriginais(data)
+      .then(response => {
+        const data = Array.isArray(response) ? response : response.data
+
+        if (!Array.isArray(data)) {
+          console.error("❌ Erro: dados não são um array válido.")
+          return
+        }
+
+        const agrupado = data.reduce((acc: any, item: any) => {
+          const id = item.ato_id
+          if (!acc[id]) {
+            acc[id] = {
+              id,
+              tipo_id: item.tipo_id,
+              nome_tipo: item.nome_tipo,
+              numero: item.numero,
+              descricao: item.descricao,
+              data_ato: item.data_ato,
+              status: item.status,
+              arquivos: [],
+            }
+          }
+
+          if (item.path_servidor) {
+            acc[id].arquivos.push({
+              tipo_arquivo: item.tipo, // ← ajuste correto para nome do campo
+              path_servidor: item.path_servidor,
+            })
+          }
+
+          return acc
+        }, {})
+
+        const resultado = Object.values(agrupado).sort((a: any, b: any) => {
+          return new Date(b.data_ato).getTime() - new Date(a.data_ato).getTime()
+        })
+
+        setDadosOriginais(resultado)
       })
   }, [])
 
   useEffect(() => {
     let filtrado = dadosOriginais
-
+  
     if (filtros.tipo_id) {
       filtrado = filtrado.filter((item) => item.tipo_id?.toString() === filtros.tipo_id)
     }
-
+  
     if (filtros.numero) {
-      filtrado = filtrado.filter((item) => item.numero?.toString().includes(filtros.numero))
+      filtrado = filtrado.filter((item) =>
+        item.numero?.toString().toLowerCase().includes(filtros.numero.toLowerCase())
+      )
     }
-
+  
+    if (filtros.descricao) {
+      filtrado = filtrado.filter((item) =>
+        item.descricao?.toLowerCase().includes(filtros.descricao.toLowerCase())
+      )
+    }
+  
     setPaginaAtual(1)
     setDados(filtrado)
   }, [filtros, dadosOriginais])
+  
 
   const indiceInicial = (paginaAtual - 1) * itensPorPagina
   const dadosPaginados = dados.slice(indiceInicial, indiceInicial + itensPorPagina)
@@ -70,6 +119,15 @@ export function ManagementActsTable() {
           className="border p-2 rounded text-sm w-40"
         />
 
+<input
+  type="text"
+  placeholder="Descrição"
+  value={filtros.descricao}
+  onChange={(e) => setFiltros({ ...filtros, descricao: e.target.value })}
+  className="border p-2 rounded text-sm w-60"
+/>
+
+
         <select
           value={filtros.tipo_id}
           onChange={(e) => setFiltros({ ...filtros, tipo_id: e.target.value })}
@@ -83,7 +141,7 @@ export function ManagementActsTable() {
         </select>
 
         <button
-          onClick={() => setFiltros({ numero: "", tipo_id: "1" })}
+          onClick={() => setFiltros({ numero: "", descricao: "", tipo_id: "1" })}
           className="text-white border border-[#3A8144] rounded-lg px-4 py-2 text-sm"
           style={{ backgroundColor: "#3A8144" }}
         >
@@ -109,25 +167,48 @@ export function ManagementActsTable() {
             <p className="text-sm text-gray-800 whitespace-pre-line leading-relaxed mb-2">
               {item.descricao}
             </p>
-            <div className="flex flex-wrap justify-between items-center text-sm gap-2">
-              <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                {item.status}
-              </span>
-              {item.path_servidor ? (
-                <button
-                  onClick={() => {
-                    setArquivoAtual(`https://epamig.tech/atos_gestao/web/${item.path_servidor.replace(/\\/g, '/')}`)
-                    setModalAberto(true)
-                  }}
-                  className="text-white px-3 py-1 text-xs transition rounded"
-                  style={{ backgroundColor: "#3A8144" }}
-                >
-                  Visualizar Arquivo
-                </button>
-              ) : (
-                <span className="text-gray-400 text-xs">Sem anexo</span>
-              )}
-            </div>
+
+           <div className="flex flex-wrap justify-between items-center text-sm gap-2">
+  <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+    {item.status}
+  </span>
+
+  {Array.isArray(item.arquivos) && item.arquivos.length > 0 ? (
+  <div className="flex gap-6 items-center">
+    {item.arquivos.map((arq: Arquivo, index: number) => {
+      const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
+      const isAtualizado = arq.tipo_arquivo === "Atualizado"
+
+      return (
+        <div
+          key={index}
+          className="flex flex-col items-center cursor-pointer group"
+          title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
+          onClick={() => {
+            setArquivoAtual(url)
+            setModalAberto(true)
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-10 h-10 mb-1 group-hover:scale-105 transition"
+            fill={isAtualizado ? "#3A8144" : "#B91C1C"}
+            viewBox="0 0 24 24"
+          >
+            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z"/>
+          </svg>
+          <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
+            {isAtualizado ? "Versão Atualizada" : "Arquivo Original"}
+          </span>
+        </div>
+      )
+    })}
+  </div>
+) : (
+  <span className="text-gray-400 text-xs">Sem anexo</span>
+)}
+</div>
+
           </div>
         ))}
         {dadosPaginados.length === 0 && (
@@ -157,41 +238,52 @@ export function ManagementActsTable() {
       )}
 
       {/* Modal */}
-      {modalAberto && arquivoAtual && (
+{modalAberto && arquivoAtual && (
   <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-    <div className="bg-white w-full max-w-6xl h-[95vh] mx-4 rounded-lg shadow-xl flex flex-row relative overflow-hidden">
+    <div className="bg-white w-full max-w-6xl h-[95vh] mx-4 rounded-lg shadow-xl flex flex-col relative overflow-hidden">
 
-      {/* Lado esquerdo: botões verticais */}
-      <div className="w-56 bg-[#f4f4f4] border-r px-4 py-6 flex flex-col justify-start items-stretch gap-4">
-        <h2 className="text-lg font-bold text-[#3A8144] text-left">Ações</h2>
-        <a
-          href={arquivoAtual}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-white text-center bg-[#3A8144] rounded px-4 py-2 hover:bg-[#2f6b39] transition"
-        >
-          Abrir em nova aba
-        </a>
-        
+      {/* Cabeçalho branco fixo com botão de fechar */}
+      <div className="w-full flex justify-between items-center px-6 py-3 border-b bg-white shadow-sm z-50">
+        <h2 className="text-lg font-bold text-[#3A8144]"></h2>
         <button
           onClick={() => setModalAberto(false)}
-          className="text-sm text-white text-center bg-[#3A8144] rounded px-4 py-2 hover:bg-[#2f6b39] transition"
+          className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 hover:bg-[#2f6b39] transition"
         >
           Fechar
         </button>
       </div>
 
-      {/* Lado direito: visualização do PDF */}
-      <div className="flex-1 overflow-auto bg-gray-100 p-4 flex justify-center items-start">
-        <iframe
-          src={arquivoAtual}
-          className="w-full max-w-[900px] aspect-[794/1123] bg-white border shadow-lg rounded"
-          style={{ minHeight: '90vh' }}
-        />
+      {/* Corpo com PDF e lateral de ações */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Lateral esquerda */}
+        <div className="w-56 bg-[#f4f4f4] border-r px-4 py-6 flex flex-col justify-start gap-4">
+          <h2 className="text-lg font-bold text-[#3A8144]">Ações</h2>
+          <a
+            href={arquivoAtual}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 text-center hover:bg-[#2f6b39] transition"
+          >
+            Abrir em nova aba
+          </a>
+        </div>
+
+        {/* Área PDF */}
+        <div className="flex-1 overflow-auto bg-gray-100 p-4 flex justify-center items-start">
+          <iframe
+            src={arquivoAtual}
+            className="w-full max-w-[900px] aspect-[794/1123] bg-white border shadow-lg rounded"
+            style={{ minHeight: '90vh' }}
+          />
+        </div>
       </div>
     </div>
   </div>
 )}
+
+
+
+
 
 
 

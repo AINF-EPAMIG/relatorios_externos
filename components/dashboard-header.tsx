@@ -28,34 +28,33 @@ export function DashboardHeader() {
         </div>
 
         {/* Links do topo direito */}
-      <div className="flex gap-3 mt-3 md:mt-0">
-          <Link
-            href="https://epamig.br"
-            className="flex items-center gap-2 text-sm text-white bg-green-700 hover:bg-green-800 px-4 py-2 rounded-md transition-all duration-300"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Globe size={18} />
-            <span>Site</span>
-          </Link>
-          <Link
-            href="mailto:contato@epamig.br"
-            className="flex items-center gap-2 text-sm text-white bg-green-700 hover:bg-green-800 px-4 py-2 rounded-md transition-all duration-300"
-          >
-            <Mail size={18} />
-            <span>E-mail</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-2 text-sm text-white bg-green-700 hover:bg-green-800 px-4 py-2 rounded-md transition-all duration-300"
-          >
-            <LayoutDashboard size={18} />
-            <span>Portal ADM</span>
-          </Link>
-        </div>
+<div className="flex items-center gap-4 mt-3 md:mt-0">
+  <a
+    href="https://www.epamig.br"
+    target="_blank"
+    className="bg-[#3A8144] text-white font-bold py-2 px-4 rounded-[10px] hover:scale-105 transition"
+  >
+    Site
+  </a>
+
+  <a
+    href="https://mail.google.com/mail/u/0/#inbox"
+    target="_blank"
+    className="bg-[#3A8144] text-white font-bold py-2 px-4 rounded-[10px] hover:scale-105 transition"
+  >
+    E-mail
+  </a>
+
+  <a
+    href="https://empresade125369.rm.cloudtotvs.com.br/Corpore.Net/Login.aspx"
+    target="_blank"
+    className="bg-[#3A8144] text-white font-bold py-2 px-4 rounded-[10px] hover:scale-105 transition"
+  >
+    Portal ADM
+  </a>
+</div>
+
       </div>
-
-
             <div className="border-t-4 border-green-700"></div> {/* Linha de separação abaixo do header */}
 
     </header>
