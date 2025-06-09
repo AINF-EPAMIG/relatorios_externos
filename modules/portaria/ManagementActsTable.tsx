@@ -183,7 +183,7 @@ export function ManagementActsTable() {
                   );
                   return arquivosParaMostrar.length > 0 ? arquivosParaMostrar.map((arq: Arquivo, index: number) => {
                     const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`;
-                    const isAtualizado = arq.tipo_arquivo === "Atualizado";
+                    const isAtualizado = arq.tipo_arquivo == "Atualizado";
                     return (
                       <div
                         key={index}
