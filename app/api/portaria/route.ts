@@ -12,7 +12,7 @@ export async function GET() {
   atos.descricao,
   atos.data_ato,
   atos.status,
-  arquivo.tipo,
+  arquivo.tipo AS tipo_arquivo, 
   arquivo.path_servidor
 FROM atos
 JOIN tipos ON tipos.id = atos.tipos_id
