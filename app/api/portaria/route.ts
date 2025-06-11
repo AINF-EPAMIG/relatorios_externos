@@ -19,7 +19,7 @@ FROM atos
 JOIN tipos ON tipos.id = atos.tipos_id
 LEFT JOIN arquivo ON arquivo.atos_id = atos.id
 WHERE tipos.nome_tipo IN ('Portarias', 'BIA', 'Deliberações', 'Resoluções')
-ORDER BY atos.data_ato DESC
+ORDER BY atos.numero DESC
     `)
 
     return NextResponse.json(rows)

@@ -12,7 +12,7 @@ interface Arquivo {
 export function ManagementActsTable() {
   const [dadosOriginais, setDadosOriginais] = useState<any[]>([])
   const [dados, setDados] = useState<any[]>([])
-  const [filtros, setFiltros] = useState({ numero: "", descricao: "", tipo_id: "1" })
+  const [filtros, setFiltros] = useState({ numero: "", descricao: "", tipo_id: "1", data_ato: "",status: "",})
   const [paginaAtual, setPaginaAtual] = useState(1)
   const [itensPorPagina, setItensPorPagina] = useState(10)
   const [modalAberto, setModalAberto] = useState(false)
@@ -62,7 +62,7 @@ export function ManagementActsTable() {
         }, {})
 
         const resultado = Object.values(agrupado).sort((a: any, b: any) => {
-          return new Date(b.data_ato).getTime() - new Date(a.data_ato).getTime()
+          return new Date(b.numero).getTime() - new Date(a.numero).getTime()
         })
 
         setDadosOriginais(resultado)
@@ -88,6 +88,21 @@ export function ManagementActsTable() {
       )
     }
 
+    if (filtros.data_ato) {
+  filtrado = filtrado.filter((item) =>
+    item.data_ato?.startsWith(filtros.data_ato)
+  )
+}
+
+if (filtros.status) {
+  filtrado = filtrado.filter((item) =>
+    item.status?.toLowerCase() === filtros.status.toLowerCase()
+  )
+}
+
+
+    
+
     setPaginaAtual(1)
     setDados(filtrado)
   }, [filtros, dadosOriginais])
@@ -99,54 +114,89 @@ export function ManagementActsTable() {
   return (
     <div className="space-y-4">
       {/* Filtros */}
-      <div className="flex flex-wrap gap-2 items-end">
-        <select
-          value={itensPorPagina}
-          onChange={(e) => setItensPorPagina(Number(e.target.value))}
-          className="border p-2 rounded text-sm w-40"
-        >
-          <option value={5}>5 por página</option>
-          <option value={10}>10 por página</option>
-          <option value={25}>25 por página</option>
-          <option value={50}>50 por página</option>
-        </select>
+<div className="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+<h2 className="text-sm font-semibold text-[#3A8144] mb-3 flex items-center gap-2 group">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-4 h-4 text-[#3A8144] transition-transform duration-200 group-hover:scale-110"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+  >
+    <path
+      fillRule="evenodd"
+      d="M12.9 14.32a8 8 0 111.414-1.414l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z"
+      clipRule="evenodd"
+    />
+  </svg>
+  <span>Filtros de Busca</span>
+</h2>
 
-        <input
-          type="text"
-          placeholder="Número"
-          value={filtros.numero}
-          onChange={(e) => setFiltros({ ...filtros, numero: e.target.value })}
-          className="border p-2 rounded text-sm w-40"
-        />
 
-        <input
-          type="text"
-          placeholder="Descrição"
-          value={filtros.descricao}
-          onChange={(e) => setFiltros({ ...filtros, descricao: e.target.value })}
-          className="border p-2 rounded text-sm w-60"
-        />
 
-        <select
-          value={filtros.tipo_id}
-          onChange={(e) => setFiltros({ ...filtros, tipo_id: e.target.value })}
-          className="border p-2 rounded text-sm w-48"
-        >
-          <option value="">Todos os tipos</option>
-          <option value="1">Portarias</option>
-          <option value="4">Deliberações</option>
-          <option value="5">Resoluções</option>
-          <option value="3">BIA</option>
-        </select>
 
-        <button
-          onClick={() => setFiltros({ numero: "", descricao: "", tipo_id: "1" })}
-          className="text-white border border-[#3A8144] rounded-lg px-4 py-2 text-sm"
-          style={{ backgroundColor: "#3A8144" }}
-        >
-          Limpar
-        </button>
-      </div>
+  <div className="flex flex-wrap gap-4 items-end">
+    <select
+      value={filtros.tipo_id}
+      onChange={(e) => setFiltros({ ...filtros, tipo_id: e.target.value })}
+      className="border border-gray-300 p-2 rounded-md text-sm w-48 bg-white focus:ring-2 focus:ring-[#3A8144]"
+    >
+      <option value="">Todos os tipos</option>
+      <option value="1">Portarias</option>
+      <option value="4">Deliberações</option>
+      <option value="5">Resoluções</option>
+      <option value="3">BIA</option>
+    </select>
+
+    <input
+      type="text"
+      placeholder="Número"
+      value={filtros.numero}
+      onChange={(e) => setFiltros({ ...filtros, numero: e.target.value })}
+      className="border border-gray-300 p-2 rounded-md text-sm w-40 focus:ring-2 focus:ring-[#3A8144]"
+    />
+
+    <input
+      type="text"
+      placeholder="Descrição"
+      value={filtros.descricao}
+      onChange={(e) => setFiltros({ ...filtros, descricao: e.target.value })}
+      className="border border-gray-300 p-2 rounded-md text-sm w-60 focus:ring-2 focus:ring-[#3A8144]"
+    />
+
+    <input
+      type="date"
+      value={filtros.data_ato}
+      onChange={(e) => setFiltros({ ...filtros, data_ato: e.target.value })}
+      className="border border-gray-300 p-2 rounded-md text-sm w-44 focus:ring-2 focus:ring-[#3A8144]"
+    />
+
+    <select
+      value={filtros.status}
+      onChange={(e) => setFiltros({ ...filtros, status: e.target.value })}
+      className="border border-gray-300 p-2 rounded-md text-sm w-44 bg-white focus:ring-2 focus:ring-[#3A8144]"
+    >
+      <option value="">Todos os status</option>
+      <option value="Vigente">Vigente</option>
+      <option value="Revogada">Revogada</option>
+      <option value="Cancelada">Cancelada</option>
+      <option value="Esgotada">Esgotada</option>
+    </select>
+
+    <button
+      onClick={() =>
+        setFiltros({ numero: "", descricao: "", tipo_id: "1", data_ato: "", status: "" })
+      }
+      className="text-white font-medium rounded-md px-4 py-2 text-sm bg-[#3A8144] hover:bg-[#2f6b39] transition"
+    >
+      Limpar
+    </button>
+  </div>
+</div>
+
+
+
+
+
 
       {/* Lista */}
       <div className="space-y-4">
@@ -179,53 +229,57 @@ export function ManagementActsTable() {
               <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
                 {item.status}
               </span>
-              <div className="flex gap-6 items-center">
-                {(() => {
-                  const arquivosValidos = (item.arquivos || []).filter((arq: Arquivo) =>
-                    arq.path_servidor &&
-                    arq.path_servidor.trim() !== "" &&
-                    arq.path_servidor !== "null"
-                  )
+             <div className="flex gap-6 items-center">
+  {(() => {
+    const arquivosValidos = (item.arquivos || []).filter(
+      (arq: Arquivo) =>
+        arq.path_servidor &&
+        arq.path_servidor.trim() !== "" &&
+        arq.path_servidor !== "null"
+    )
 
-                  const arquivosParaMostrar = arquivosValidos.filter(
-                    (arq: Arquivo) =>
-                      arq.tipo_arquivo === "Arquivo" || arq.tipo_arquivo === "Atualizado"
-                  )
+    const arquivosParaMostrar = arquivosValidos
+      .filter(
+        (arq: Arquivo) =>
+          arq.tipo_arquivo === "Arquivo" || arq.tipo_arquivo === "Atualizado"
+      )
+      .reverse() // <- inverte a ordem
 
-                  return arquivosParaMostrar.length > 0 ? (
-                    arquivosParaMostrar.map((arq: Arquivo, index: number) => {
-                      const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
-                      const isAtualizado = arq.tipo_arquivo === "Atualizado"
+    return arquivosParaMostrar.length > 0 ? (
+      arquivosParaMostrar.map((arq: Arquivo, index: number) => {
+        const url = `https://epamigsistema.com/atos_gestao/web/${arq.path_servidor.replace(/\\/g, '/')}`
+        const isAtualizado = arq.tipo_arquivo === "Atualizado"
 
-                      return (
-                        <div
-                          key={index}
-                          className="flex flex-col items-center cursor-pointer group"
-                          title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
-                          onClick={() => {
-                            setArquivoAtual(url)
-                            setModalAberto(true)
-                          }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-10 h-10 mb-1 group-hover:scale-105 transition"
-                            fill={isAtualizado ? "#3A8144" : "#B91C1C"}
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z" />
-                          </svg>
-                          <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
-                            {isAtualizado ? "Versão Atualizada" : "Arquivo Original"}
-                          </span>
-                        </div>
-                      )
-                    })
-                  ) : (
-                    <span className="text-gray-400 text-xs">Sem anexo</span>
-                  )
-                })()}
-              </div>
+        return (
+          <div
+            key={index}
+            className="flex flex-col items-center cursor-pointer group"
+            title={isAtualizado ? "Visualizar PDF Atualizado" : "Visualizar o PDF Original"}
+            onClick={() => {
+              setArquivoAtual(url)
+              setModalAberto(true)
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-10 h-10 mb-1 group-hover:scale-105 transition"
+              fill={isAtualizado ? "#3A8144" : "#B91C1C"}
+              viewBox="0 0 24 24"
+            >
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm1 7H8V7h7v2zm0 4H8v-2h7v2zm0 4H8v-2h7v2z" />
+            </svg>
+            <span className="text-xs font-medium text-blue-800 underline hover:text-blue-600 transition">
+              {isAtualizado ? "Arquivo Atualizado" : "Arquivo Original"}
+            </span>
+          </div>
+        )
+      })
+    ) : (
+      <span className="text-gray-400 text-xs">Sem anexo</span>
+    )
+  })()}
+</div>
+
             </div>
           </div>
         ))}
@@ -235,23 +289,46 @@ export function ManagementActsTable() {
       </div>
 
       {/* Paginação */}
-      {totalPaginas > 1 && (
-        <div className="flex justify-center gap-2 text-sm">
-          {Array.from({ length: totalPaginas }, (_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => setPaginaAtual(i + 1)}
-              className={`px-3 py-1 rounded border transition ${
-                paginaAtual === i + 1
-                  ? "bg-[#3A8144] text-white"
-                  : "bg-white text-[#3A8144] border-[#3A8144] hover:bg-[#3A8144]/10"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
-      )}
+    {totalPaginas > 1 && (
+  <div className="flex justify-center items-center gap-4 text-sm mt-4">
+    <button
+      onClick={() => setPaginaAtual(1)}
+      disabled={paginaAtual === 1}
+      className="px-2 py-1 rounded border text-[#3A8144] hover:bg-[#3A8144]/10 disabled:opacity-40"
+    >
+      « Primeira
+    </button>
+
+    <button
+      onClick={() => setPaginaAtual((prev) => Math.max(1, prev - 1))}
+      disabled={paginaAtual === 1}
+      className="px-2 py-1 rounded border text-[#3A8144] hover:bg-[#3A8144]/10 disabled:opacity-40"
+    >
+      ‹ Anterior
+    </button>
+
+    <span className="text-gray-700 font-medium">
+      Página {paginaAtual} de {totalPaginas}
+    </span>
+
+    <button
+      onClick={() => setPaginaAtual((prev) => Math.min(totalPaginas, prev + 1))}
+      disabled={paginaAtual === totalPaginas}
+      className="px-2 py-1 rounded border text-[#3A8144] hover:bg-[#3A8144]/10 disabled:opacity-40"
+    >
+      Próxima ›
+    </button>
+
+    <button
+      onClick={() => setPaginaAtual(totalPaginas)}
+      disabled={paginaAtual === totalPaginas}
+      className="px-2 py-1 rounded border text-[#3A8144] hover:bg-[#3A8144]/10 disabled:opacity-40"
+    >
+      Última »
+    </button>
+  </div>
+)}
+
 
       {/* Modal */}
       {modalAberto && arquivoAtual && (
