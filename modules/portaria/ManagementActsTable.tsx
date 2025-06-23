@@ -26,6 +26,14 @@ export function ManagementActsTable() {
   }
 
   useEffect(() => {
+  fetch("/api/log-acesso", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userAgent: navigator.userAgent }),
+  });
+}, []);
+
+  useEffect(() => {
     fetch("/api/portaria", { cache: "no-store" })
       .then(res => res.json())
       .then(response => {
