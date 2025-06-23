@@ -1,9 +1,18 @@
 import { NextRequest } from 'next/server';
 import mysql from 'mysql2/promise';
 
+// Função para pegar a data/hora de Brasília no formato MySQL DATETIME
+function getBrasilDatetime() {
+  const now = new Date();
+  // Ajusta para UTC-3 (Brasília)
+  const brasilTime = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+  return brasilTime.toISOString().slice(0, 19).replace('T', ' ');
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { userAgent } = await request.json();
+    const dataCadastro = getBrasilDatetime();
 
     // Conexão com o banco
     const conn = await mysql.createConnection({
@@ -14,8 +23,8 @@ export async function POST(request: NextRequest) {
     });
 
     await conn.execute(
-      'INSERT INTO quantitativo_acessos (user_agent) VALUES (?)',
-      [userAgent]
+      'INSERT INTO quantitativo_acessos (user_agent, data_cadastro) VALUES (?, ?)',
+      [userAgent, dataCadastro]
     );
     await conn.end();
 
