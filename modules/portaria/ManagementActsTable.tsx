@@ -90,11 +90,14 @@ export function ManagementActsTable() {
       )
     }
 
-    if (filtros.descricao) {
-      filtrado = filtrado.filter((item) =>
-        item.descricao?.toLowerCase().includes(filtros.descricao.toLowerCase())
-      )
-    }
+ if (filtros.descricao) {
+  const palavras = filtros.descricao.trim().toLowerCase().split(/\s+/)
+  filtrado = filtrado.filter((item) =>
+    palavras.some(palavra => item.descricao?.toLowerCase().includes(palavra))
+  )
+}
+
+
 
     if (filtros.data_ato) {
   filtrado = filtrado.filter((item) =>
@@ -339,41 +342,46 @@ if (filtros.status) {
 
 
       {/* Modal */}
-      {modalAberto && arquivoAtual && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white w-full max-w-6xl h-[95vh] mx-4 rounded-lg shadow-xl flex flex-col relative overflow-hidden">
-            <div className="w-full flex justify-between items-center px-6 py-3 border-b bg-white shadow-sm z-50">
-              <h2 className="text-lg font-bold text-[#3A8144]">Visualização do Arquivo</h2>
-              <button
-                onClick={() => setModalAberto(false)}
-                className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 hover:bg-[#2f6b39] transition"
-              >
-                Fechar
-              </button>
-            </div>
-            <div className="flex flex-1 overflow-hidden">
-              <div className="w-56 bg-[#f4f4f4] border-r px-4 py-6 flex flex-col gap-4">
-                <h2 className="text-lg font-bold text-[#3A8144]">Ações</h2>
-                <a
-                  href={arquivoAtual}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 text-center hover:bg-[#2f6b39] transition"
-                >
-                  Abrir em nova aba
-                </a>
-              </div>
-              <div className="flex-1 overflow-auto bg-gray-100 p-4 flex justify-center items-start">
-                <iframe
-                  src={arquivoAtual}
-                  className="w-full max-w-[900px] aspect-[794/1123] bg-white border shadow-lg rounded"
-                  style={{ minHeight: '90vh' }}
-                />
-              </div>
-            </div>
-          </div>
+    {modalAberto && arquivoAtual && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-all">
+    <div className="bg-white w-full max-w-6xl h-[95vh] mx-4 rounded-xl shadow-2xl flex flex-col relative overflow-hidden border-2 border-[#3A8144]">
+      <div className="w-full flex justify-between items-center px-6 py-3 border-b bg-white shadow-sm z-50">
+        <h2 className="text-lg font-bold text-[#3A8144]">Visualização do Arquivo</h2>
+   <button
+  style={{ background: "#dc2626", color: "#fff" }} // #dc2626 = red-600 Tailwind
+  className="px-4 py-2 rounded-md font-bold transition"
+  onClick={() => setModalAberto(false)}
+>
+  Fechar
+</button>
+
+
+
+      </div>
+      <div className="flex flex-1 overflow-hidden">
+        <div className="w-56 bg-[#f4f4f4] border-r px-4 py-6 flex flex-col gap-4">
+          <h2 className="text-lg font-bold text-[#3A8144]">Ações</h2>
+          <a
+            href={arquivoAtual}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-white bg-[#3A8144] rounded px-4 py-2 text-center hover:bg-[#25622c] transition font-medium shadow"
+          >
+            Abrir em nova aba
+          </a>
         </div>
-      )}
+        <div className="flex-1 overflow-auto bg-gray-100 p-4 flex justify-center items-start">
+          <iframe
+            src={arquivoAtual}
+            className="w-full max-w-[900px] aspect-[794/1123] bg-white border shadow-lg rounded"
+            style={{ minHeight: '90vh' }}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   )
 }
