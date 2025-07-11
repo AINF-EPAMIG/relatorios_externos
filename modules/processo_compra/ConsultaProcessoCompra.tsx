@@ -264,7 +264,7 @@ useEffect(() => {
       rel="noopener noreferrer"
       className="underline text-[#3A8144] hover:text-[#25622c] font-medium"
     >
-      Visualizar Arquivo
+      Acessar Arquivo
     </a>
   </li>
 </ul>
