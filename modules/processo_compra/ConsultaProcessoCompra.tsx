@@ -192,22 +192,22 @@ useEffect(() => {
     </div>
 
     {/* Botão Limpar com borda arredondada */}
-    <div className="flex items-end justify-center pt-1">
-<button
-  className="bg-[#3A8144] hover:bg-[#25622c] text-white text-sm font-semibold px-6 py-1.5 rounded-full shadow-sm transition"
-  onClick={() => setFiltros({
-    tipo_edital: "",
-    tipo_publicacao: "",
-    numero_processo: "",
-    numero_sei: "",
-    objeto: "",
-    data_abertura: "",
-  })}
-  type="button"
->
-  Limpar Pesquisa
-</button>
-    </div>
+    <div className="flex items-end justify-start pt-2">
+    <button
+      className="bg-[#3A8144] hover:bg-[#25622c] text-white text-sm font-semibold px-6 py-1.5 rounded-full shadow-sm transition mt-2"
+      onClick={() => setFiltros({
+        tipo_edital: "",
+        tipo_publicacao: "",
+        numero_processo: "",
+        numero_sei: "",
+        objeto: "",
+        data_abertura: "",
+      })}
+      type="button"
+    >
+      Limpar Pesquisa
+    </button>
+  </div>
   </div>
 </div>
 
