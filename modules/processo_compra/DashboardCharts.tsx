@@ -194,50 +194,81 @@ export function DashboardCharts() {
             </div>
           </TabsContent>
 
-         <TabsContent value="pie">
-  <div className="relative w-full px-2 h-[400px] sm:h-[480px]">
-    <ResponsiveContainer width="100%" height="100%">
-      <PieChart>
-        <Pie
-          data={typeData}
-          dataKey="value"
-          nameKey="name"
-          cx="50%"
-          cy="50%"
-          outerRadius="65%" // aumentei um pouco para caber melhor
-          innerRadius="45%"
-          paddingAngle={2}
-          isAnimationActive={true}
-        >
-          {typeData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip content={<CustomTooltip />} />
-        <Legend
-          layout="horizontal"
-          verticalAlign="bottom"
-          align="center"
-          wrapperStyle={{
-            fontSize: '13px',
-            marginTop: 16,
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            width: '100%',
-            lineHeight: '22px'
-          }}
-        />
-      </PieChart>
-    </ResponsiveContainer>
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-      <div className="text-center text-sm sm:text-base font-semibold text-[#3A8144]">
-        Total<br />
-        <span className="text-xl font-bold">{totalPublicacoes.toLocaleString("pt-BR")}</span>
-      </div>
-    </div>
+       <TabsContent value="pie">
+ <div
+  className="
+    relative
+    w-full
+    max-w-[340px] 
+    sm:max-w-[300px]
+    md:max-w-[340px]
+    mx-auto
+    " 
+  style={{ height: "min(64vw, 320px)" }}
+>
+  <ResponsiveContainer width="100%" height="100%">
+    <PieChart>
+      <Pie
+        data={typeData}
+        dataKey="value"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius="78%"
+        innerRadius="56%"
+        paddingAngle={2}
+        isAnimationActive={true}
+      >
+        {typeData.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+      <Tooltip content={<CustomTooltip />} />
+      <Legend
+        layout="horizontal"
+        verticalAlign="bottom"
+        align="center"
+        wrapperStyle={{
+          fontSize: '13px',
+          marginTop: 10,
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          width: '100%',
+          lineHeight: '22px'
+        }}
+      />
+    </PieChart>
+  </ResponsiveContainer>
+  {/* Número centralizado e responsivo */}
+  <div
+    className="absolute inset-0 flex items-center justify-center pointer-events-none"
+    style={{ zIndex: 1 }}
+  >
+ <span
+  style={{
+    color: "#3A8144",
+    fontWeight: "bold",
+    fontSize: "clamp(1rem, 2.2vw, 1.5rem)", // menor máximo!
+    letterSpacing: '0.01em',
+    lineHeight: 1,
+    transform: "translateY(-120%)", // sobe mais ainda
+  }}
+>
+  {totalPublicacoes.toLocaleString("pt-BR")}
+</span>
+
   </div>
+</div>
+
+
+
 </TabsContent>
+
+
+
+
+
 
 
           <TabsContent value="data">
