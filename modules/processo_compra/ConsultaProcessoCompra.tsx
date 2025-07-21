@@ -32,11 +32,13 @@ interface Arquivo {
   path_servidor: string
 }
 
-// Função utilitária para formatar datas do banco (YYYY-MM-DD -> DD/MM/YYYY)
+// Função utilitária para formatar datas do banco (YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss.sssZ -> DD/MM/YYYY)
 function formatarDataBanco(dataStr?: string) {
   if (!dataStr) return "—";
-  const [ano, mes, dia] = dataStr.split("-");
-  if (!ano || !mes || !dia) return "—";
+  // Extrai apenas a parte da data (YYYY-MM-DD)
+  const match = dataStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) return "—";
+  const [, ano, mes, dia] = match;
   return `${dia}/${mes}/${ano}`;
 }
 
