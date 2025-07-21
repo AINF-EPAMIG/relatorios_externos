@@ -32,6 +32,14 @@ interface Arquivo {
   path_servidor: string
 }
 
+// Função utilitária para formatar datas do banco (YYYY-MM-DD -> DD/MM/YYYY)
+function formatarDataBanco(dataStr?: string) {
+  if (!dataStr) return "—";
+  const [ano, mes, dia] = dataStr.split("-");
+  if (!ano || !mes || !dia) return "—";
+  return `${dia}/${mes}/${ano}`;
+}
+
 export default function ConsultaProcessoCompra() {
   const [dadosOriginais, setDadosOriginais] = useState<any[]>([])
   const [dados, setDados] = useState<any[]>([])
@@ -240,11 +248,21 @@ useEffect(() => {
               </div>
               <div className="flex flex-wrap gap-4 mt-2 text-sm">
                 <span>
-                  <b>Data da Abertura / Ratificação:</b>{" "}
+                  <b>Data da Retificação:</b>{" "}
                   <span className="text-gray-700">
-                    {item.data_abertura
-                      ? new Date(item.data_abertura).toLocaleDateString("pt-BR")
-                      : "—"}
+                    {formatarDataBanco(item.data_retificacao)}
+                  </span>
+                </span>
+                <span>
+                  <b>Data da Abertura:</b>{" "}
+                  <span className="text-gray-700">
+                    {formatarDataBanco(item.data_abertura)}
+                  </span>
+                </span>
+                <span>
+                  <b>Data de Fechamento:</b>{" "}
+                  <span className="text-gray-700">
+                    {formatarDataBanco(item.data_fechamento)}
                   </span>
                 </span>
               </div>
