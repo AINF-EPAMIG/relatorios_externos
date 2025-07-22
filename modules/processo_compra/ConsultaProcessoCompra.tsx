@@ -96,20 +96,8 @@ useEffect(() => {
     )
   }
 
-  // Ordenação por data_abertura DESC e depois por id DESC
-  filtrado = [...filtrado].sort((a, b) => {
-    const getTime = (d: string | undefined) => {
-      if (!d) return -Infinity
-      const dt = new Date(d)
-      return isNaN(dt.getTime()) ? -Infinity : dt.getTime()
-    }
-    const timeA = getTime(a.data_abertura)
-    const timeB = getTime(b.data_abertura)
-    if (timeB !== timeA) {
-      return timeB - timeA // data_abertura DESC
-    }
-    return (b.id ?? 0) - (a.id ?? 0) // id DESC
-  })
+  // Ordenação apenas por id DESC
+  filtrado = [...filtrado].sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
 
   setDados(filtrado)
 }, [filtros, dadosOriginais])
