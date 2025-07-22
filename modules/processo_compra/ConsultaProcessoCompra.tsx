@@ -254,7 +254,7 @@ useEffect(() => {
               </div>
               <div className="flex flex-wrap gap-4 mt-2 text-sm">
                 <span>
-                  <b>Data da Abertura:</b>{" "}
+                  <b>Data da Abertura / Ratificação:</b>{" "}
                   <span className="text-gray-700">
                     {formatarDataBanco(item.data_abertura)}
                   </span>
