@@ -95,6 +95,17 @@ useEffect(() => {
       item.data_abertura?.startsWith(filtros.data_abertura)
     )
   }
+
+  // Ordenação por data_abertura DESC e depois por id DESC
+  filtrado = [...filtrado].sort((a, b) => {
+    const dataA = a.data_abertura ? new Date(a.data_abertura).getTime() : 0
+    const dataB = b.data_abertura ? new Date(b.data_abertura).getTime() : 0
+    if (dataB !== dataA) {
+      return dataB - dataA // data_abertura DESC
+    }
+    return (b.id ?? 0) - (a.id ?? 0) // id DESC
+  })
+
   setDados(filtrado)
 }, [filtros, dadosOriginais])
 
