@@ -85,8 +85,6 @@ export async function GET() {
       WHERE 
         (p.tipo_publicacao != 7 OR (p.tipo_publicacao = 7 AND p.publicar_site = 1))
       ORDER BY 
-        CASE WHEN p.data_abertura IS NULL THEN 1 ELSE 0 END,
-        p.data_abertura DESC,
         p.id DESC
     `);
 
