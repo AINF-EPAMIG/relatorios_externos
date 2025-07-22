@@ -110,6 +110,7 @@ export async function GET() {
           hora_abertura: row.hora_abertura,
           data_fechamento: row.data_fechamento,
           hora_fechamento: row.hora_fechamento,
+
           arquivos: [],
         };
       }
