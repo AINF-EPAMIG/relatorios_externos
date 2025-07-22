@@ -98,11 +98,15 @@ useEffect(() => {
 
   // Ordenação por data_abertura DESC e depois por id DESC
   filtrado = [...filtrado].sort((a, b) => {
-    // Garante que datas nulas ou inválidas fiquem por último
-    const dataA = a.data_abertura ? Date.parse(a.data_abertura) : -Infinity
-    const dataB = b.data_abertura ? Date.parse(b.data_abertura) : -Infinity
-    if (dataB !== dataA) {
-      return dataB - dataA // data_abertura DESC
+    const getTime = (d: string | undefined) => {
+      if (!d) return -Infinity
+      const dt = new Date(d)
+      return isNaN(dt.getTime()) ? -Infinity : dt.getTime()
+    }
+    const timeA = getTime(a.data_abertura)
+    const timeB = getTime(b.data_abertura)
+    if (timeB !== timeA) {
+      return timeB - timeA // data_abertura DESC
     }
     return (b.id ?? 0) - (a.id ?? 0) // id DESC
   })
