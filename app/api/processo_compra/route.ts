@@ -124,18 +124,8 @@ export async function GET() {
       }
     }
 
-    // Ordenação final, mesmo agrupado, para garantir consistência
-    const resultadoFinal = Object.values(agrupado).sort((a, b) => {
-      // Nulls de data_abertura vão para o final
-      if (!a.data_abertura && b.data_abertura) return 1;
-      if (a.data_abertura && !b.data_abertura) return -1;
-      if (a.data_abertura !== b.data_abertura) {
-        if (!a.data_abertura) return 1;
-        if (!b.data_abertura) return -1;
-        return new Date(b.data_abertura).getTime() - new Date(a.data_abertura).getTime();
-      }
-      return b.id - a.id;
-    });
+    // NÃO reordene novamente, apenas agrupe os arquivos
+    const resultadoFinal = Object.values(agrupado);
 
     return NextResponse.json(resultadoFinal);
 
