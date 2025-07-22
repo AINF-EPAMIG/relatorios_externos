@@ -10,6 +10,7 @@ interface Arquivo {
 }
 
 interface EditalRow {
+  data_cadastro: string | null
   id: number
   tipo_edital: number | string
   tipo_publicacao: number | string
@@ -42,6 +43,7 @@ interface EditalResult {
   hora_abertura: string | null
   data_fechamento: string | null
   hora_fechamento: string | null
+  data_cadastro: string | null
   arquivos: Arquivo[]
 }
 
@@ -77,7 +79,8 @@ export async function GET() {
         p.hora_fechamento,
         a.nome_arquivo,
         a.path_servidor,
-        a.tipo AS tipo_arquivo
+        a.tipo AS tipo_arquivo,
+        p.data_cadastro
       FROM editais AS p
       LEFT JOIN usuario AS u ON u.id = p.responsavel
       LEFT JOIN fonte AS f ON f.id = p.fonte_id
@@ -110,6 +113,7 @@ export async function GET() {
           hora_abertura: row.hora_abertura,
           data_fechamento: row.data_fechamento,
           hora_fechamento: row.hora_fechamento,
+          data_cadastro: row.data_cadastro,
 
           arquivos: [],
         };
