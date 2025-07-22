@@ -98,8 +98,9 @@ useEffect(() => {
 
   // Ordenação por data_abertura DESC e depois por id DESC
   filtrado = [...filtrado].sort((a, b) => {
-    const dataA = a.data_abertura ? new Date(a.data_abertura).getTime() : 0
-    const dataB = b.data_abertura ? new Date(b.data_abertura).getTime() : 0
+    // Garante que datas nulas ou inválidas fiquem por último
+    const dataA = a.data_abertura ? Date.parse(a.data_abertura) : -Infinity
+    const dataB = b.data_abertura ? Date.parse(b.data_abertura) : -Infinity
     if (dataB !== dataA) {
       return dataB - dataA // data_abertura DESC
     }
