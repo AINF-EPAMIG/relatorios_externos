@@ -311,10 +311,10 @@ useEffect(() => {
       {/* Corpo */}
       <div className="p-4 text-base text-gray-800 flex flex-col gap-2">
         <div><b>Responsável:</b> {modalData.responsa?.nome || modalData.responsavel || "—"}</div>
-        <div><b>Data da Publicação:</b> {modalData.data_cadastro ? new Date(modalData.data_cadastro).toLocaleDateString("pt-BR") : "—"}</div>
-        <div><b>Data da Abertura:</b> {modalData.data_abertura ? new Date(modalData.data_abertura).toLocaleDateString("pt-BR") : "—"}</div>
+        <div><b>Data da Publicação:</b> {formatarDataBanco(modalData.data_cadastro)}</div>
+        <div><b>Data da Abertura:</b> {formatarDataBanco(modalData.data_abertura)}</div>
         <div><b>Hora da Abertura:</b> {modalData.hora_abertura || "—"}</div>
-        <div><b>Data de Fechamento:</b> {modalData.data_fechamento ? new Date(modalData.data_fechamento).toLocaleDateString("pt-BR") : "—"}</div>
+        <div><b>Data de Fechamento:</b> {formatarDataBanco(modalData.data_fechamento)}</div>
         <div><b>Hora de Fechamento:</b> {modalData.hora_fechamento || "—"}</div>
         <div><b>Fonte:</b> {modalData.fonte || "—"}</div>
         {/* Botão de fechar alinhado à direita */}
