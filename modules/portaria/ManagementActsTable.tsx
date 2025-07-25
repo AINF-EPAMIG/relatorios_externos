@@ -12,7 +12,15 @@ interface Arquivo {
 export function ManagementActsTable() {
   const [dadosOriginais, setDadosOriginais] = useState<any[]>([])
   const [dados, setDados] = useState<any[]>([])
-  const [filtros, setFiltros] = useState({ numero: "", descricao: "", tipo_id: "1", data_ato: "",status: "",})
+const [filtros, setFiltros] = useState({
+  numero: "",
+  descricao: "",
+  tipo_id: "1",
+  data_ato: "",
+  status: "",
+  tipoBuscaDescricao: "",
+})
+
   const [paginaAtual, setPaginaAtual] = useState(1)
   const [itensPorPagina, setItensPorPagina] = useState(10)
   const [modalAberto, setModalAberto] = useState(false)
@@ -90,12 +98,30 @@ export function ManagementActsTable() {
       )
     }
 
- if (filtros.descricao) {
-  const palavras = filtros.descricao.trim().toLowerCase().split(/\s+/)
-  filtrado = filtrado.filter((item) =>
-    palavras.some(palavra => item.descricao?.toLowerCase().includes(palavra))
-  )
+if (filtros.descricao) {
+  const normalizar = (texto: string) =>
+    texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+
+  const descricaoFiltro = normalizar(filtros.descricao.trim())
+  const palavras = descricaoFiltro.split(/\s+/)
+
+  filtrado = filtrado.filter((item) => {
+    const texto = normalizar(item.descricao || "")
+
+    if (filtros.tipoBuscaDescricao === "exata") {
+      return texto.includes(descricaoFiltro)
+    } else if (filtros.tipoBuscaDescricao === "qualquer") {
+      return palavras.some(palavra => texto.includes(palavra))
+    } else if (filtros.tipoBuscaDescricao === "todas") {
+      return palavras.every(palavra => texto.includes(palavra))
+    } else {
+      return true // Se o usuário não selecionar tipo de busca, ignora esse filtro
+    }
+  })
 }
+
+
+
 
 
 
@@ -166,6 +192,20 @@ if (filtros.status) {
       className="border border-gray-300 p-2 rounded-md text-sm w-40 focus:ring-2 focus:ring-[#3A8144]"
     />
 
+<div className="relative w-60">
+  <select
+    value={filtros.tipoBuscaDescricao}
+    onChange={(e) => setFiltros({ ...filtros, tipoBuscaDescricao: e.target.value })}
+    className="border border-gray-300 p-2 rounded-md text-sm w-full bg-white appearance-none pr-10 focus:ring-2 focus:ring-[#3A8144]"
+  >
+    <option value="">Selecione o tipo de busca</option>
+    <option value="todas">Contém todas as palavras</option>
+    <option value="qualquer">Contém qualquer palavra</option>
+    <option value="exata">Busca exata</option>
+  </select>
+</div>
+
+
     <input
       type="text"
       placeholder="Descrição"
@@ -193,14 +233,22 @@ if (filtros.status) {
       <option value="Esgotada">Esgotada</option>
     </select>
 
-    <button
-      onClick={() =>
-        setFiltros({ numero: "", descricao: "", tipo_id: "1", data_ato: "", status: "" })
-      }
-      className="text-white font-medium rounded-md px-4 py-2 text-sm bg-[#3A8144] hover:bg-[#2f6b39] transition"
-    >
-      Limpar
-    </button>
+   <button
+  onClick={() =>
+    setFiltros({
+      numero: "",
+      descricao: "",
+      tipo_id: "1",
+      data_ato: "",
+      status: "",
+      tipoBuscaDescricao: "", // ← valor inicial
+    })
+  }
+  className="text-white font-medium rounded-md px-4 py-2 text-sm bg-[#3A8144] hover:bg-[#2f6b39] transition"
+>
+  Limpar
+</button>
+
   </div>
 </div>
 
