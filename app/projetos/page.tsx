@@ -1,7 +1,9 @@
-import Sidebar from "../components/sidebar-responsive";
-import RegionaisDashboard from "../components/dashboard/RegionaisDashboard";
+'use client';
 
-export default function Home() {
+import Sidebar from '../../components/sidebar-responsive';
+import ProjetosDashboard from '../../components/dashboard/ProjetosDashboard';
+
+export default function ProjetosPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
@@ -9,12 +11,12 @@ export default function Home() {
         {/* Header do dashboard - Responsivo */}
         <div className="mb-6 lg:mb-8">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-center text-[#157A5B] tracking-tight drop-shadow-lg bg-white/90 rounded-lg py-3 px-4 sm:py-4 sm:px-6 w-full max-w-4xl mx-auto backdrop-blur-sm border border-gray-200">
-            Pesquisadores e Assessores Técnicos
+            Projetos Executados
           </h2>
         </div>
-        
-        {/* Dashboard de regionais */}
-        <RegionaisDashboard />
+
+        {/* Dashboard de projetos */}
+        <ProjetosDashboard />
       </main>
     </div>
   );
